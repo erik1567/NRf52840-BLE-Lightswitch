@@ -1,0 +1,3 @@
+Hello
+
+This is me trying to configure git to push projects.
