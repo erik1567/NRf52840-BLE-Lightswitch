@@ -1,14 +1,14 @@
 #include <bluefruit.h>
 #include "Adafruit_TinyUSB.h"
 
-// --- SETTINGS ---
-BLEClientUart clientUart; // We still need this for the connection later
 
-// --- SHARED DATA ---
+BLEClientUart clientUart;
+
+
 volatile bool packetAvailable = false;
 uint8_t       packetData[32];
 uint8_t       packetLen;
-ble_gap_addr_t packetAddr; // We need the full address struct to connect
+ble_gap_addr_t packetAddr;
 
 
 const uint8_t TARGET_UUID[] = { 
@@ -64,7 +64,6 @@ bool checkPacketForUUID() {
   if (packetLen < 16) return false;
 
   for (int i = 0; i <= packetLen - 16; i++) {
-    // Compare memory at index 'i' with our target UUID
     if (memcmp(&packetData[i], TARGET_UUID, 16) == 0) {
       return true; // Found it!
     }
