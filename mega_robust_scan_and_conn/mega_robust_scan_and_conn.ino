@@ -1,6 +1,6 @@
 #include <bluefruit.h>
-#include "Adafruit_TinyUSB.h"
-
+#include <Adafruit_TinyUSB.h>
+#include <Arduino.h>
 // --- SETTINGS ---
 BLEClientUart clientUart; // We still need this for the connection later
 

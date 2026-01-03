@@ -4,14 +4,14 @@
 // BLE objects
 BLEDis bledis;                     // Device Information Service
 BLEUart bleuart;                   // Nordic UART Service (NUS)-like
-
+bool prev_state=0, state=0;
 void setup() {
   // --- USB Serial ---
-  while(!Serial) delay(10);
-  Serial.begin(115200);
+  delay(5000);
+  //while(!Serial) delay(10);
   // Give USB time to enumerate (especially after reset)
   delay(2000);
-  Serial.println("Starting BLE UART example...");
+  pinMode(D8, INPUT_PULLUP);
 
   // --- Initialize Bluefruit ---
   Bluefruit.begin();
@@ -32,7 +32,6 @@ void setup() {
   // --- Set up advertising ---
   startAdv();
 
-  Serial.println("BLE UART is ready. Open nRF Connect, connect, and write data.");
 }
 
 void loop() {
@@ -47,6 +46,7 @@ void loop() {
     // Print received bytes to Serial Monitor
     Serial.write(c);
   }*/
+  /*
     while (Serial.available())
   {
     // Delay to wait for enough input, since we have a limited transmission buffer
@@ -55,7 +55,13 @@ void loop() {
     uint8_t buf[64];
     int count = Serial.readBytes(buf, sizeof(buf));
     bleuart.write( buf, count );
+  }*/
+  state= digitalRead(D8);
+  if(state!=prev_state)
+  {
+  bleuart.write("1");
   }
+prev_state=state;
 
   // Small delay to avoid busy-waiting
   delay(5);
@@ -78,8 +84,6 @@ void startAdv() {
   Bluefruit.Advertising.setInterval(32, 244);  // 20 ms to 152.5 ms
   Bluefruit.Advertising.setFastTimeout(30);    // fast mode for 30 seconds
   Bluefruit.Advertising.start(0);              // 0 = advertise forever
-
-  Serial.println("Advertising started.");
 }
 void connect_callback(uint16_t conn_handle)
 {
@@ -89,15 +93,10 @@ void connect_callback(uint16_t conn_handle)
   char central_name[32] = { 0 };
   connection->getPeerName(central_name, sizeof(central_name));
 
-  Serial.print("Connected to ");
-  Serial.println(central_name);
 }
 
 void disconnect_callback(uint16_t conn_handle, uint8_t reason)
 {
   (void) conn_handle;
   (void) reason;
-
-  Serial.println();
-  Serial.print("Disconnected, reason = 0x"); Serial.println(reason, HEX);
 }
